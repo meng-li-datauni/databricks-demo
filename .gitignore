@@ -1,0 +1,21 @@
+# Local Spark / Delta / MLflow state created by `python main.py`
+.local/
+derby.log
+metastore_db/
+spark-warehouse/
+mlruns/
+
+# Build & bundle output
+dist/
+build/
+*.egg-info/
+.databricks/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+
+# IDE
+.idea/

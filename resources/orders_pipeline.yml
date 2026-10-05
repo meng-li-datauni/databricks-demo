@@ -1,0 +1,16 @@
+# Lakeflow Declarative Pipeline (Delta Live Tables) defined in pipelines/orders_pipeline.py.
+resources:
+  pipelines:
+    orders_pipeline:
+      name: databricks_demo_orders_pipeline
+      catalog: ${var.catalog}
+      schema: ${var.schema}_dlt
+      serverless: true
+      channel: CURRENT
+      # Triggered (not continuous): each update processes new data, then stops.
+      continuous: false
+      libraries:
+        - file:
+            path: ../pipelines/orders_pipeline.py
+      configuration:
+        demo.landing_path: /Volumes/${var.catalog}/${var.schema}/demo/landing

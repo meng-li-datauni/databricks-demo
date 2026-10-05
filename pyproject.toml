@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "databricks_demo"
+version = "0.1.0"
+description = "Databricks lakehouse demo: medallion ETL, Delta Lake, streaming, pipelines, MLflow"
+requires-python = ">=3.10"
+# No runtime dependencies: Databricks provides pyspark/delta; the job's
+# environment adds mlflow/scikit-learn for the training task.
+dependencies = []
+
+[project.optional-dependencies]
+# Everything needed to run the full demo on a laptop (also needs Java 17).
+local = [
+    "pyspark>=3.5,<3.6",
+    "delta-spark>=3.2,<3.4",
+    "mlflow>=3.16",
+    "scikit-learn>=1.4",
+    "pandas>=2.0",
+    "pyarrow>=14",
+    "setuptools",  # PySpark 3.5's toPandas() imports distutils, removed in Python 3.12
+]
+# Local explorer UI: streamlit run ui/app.py
+ui = ["streamlit>=1.50", "altair>=5"]
+dev = ["pytest>=8", "build>=1.2"]
+
+# Entry points used by python_wheel_task in resources/lakehouse_job.yml.
+[project.scripts]
+setup = "databricks_demo.setup:main"
+generate = "databricks_demo.generator:main"
+bronze = "databricks_demo.bronze:main"
+silver = "databricks_demo.silver:main"
+gold = "databricks_demo.gold:main"
+delta_features = "databricks_demo.delta_features:main"
+train = "databricks_demo.ml:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
