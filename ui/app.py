@@ -305,7 +305,7 @@ def model_results(names: list[str]) -> None:
         preds["tier"].rename("actual tier"),
         preds["premium_prediction"].map({1: "predicted premium", 0: "predicted standard"}),
     )
-    st.dataframe(matrix)
+    st.dataframe(matrix.reset_index(), hide_index=True)
     st.subheader("Misclassified customers")
     st.dataframe(preds[actual != preds["premium_prediction"]], hide_index=True, width="stretch")
     st.caption("Runs, metrics and model versions: `mlflow ui --backend-store-uri sqlite:///.local/mlflow.db`")

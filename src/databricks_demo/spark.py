@@ -43,8 +43,14 @@ def _local_spark() -> SparkSession:
     )
     spark = configure_spark_with_delta_pip(builder).getOrCreate()
     spark.sparkContext.setLogLevel("WARN")
-    # Delta tables don't fit Hive's column-type model, so the local metastore logs a
-    # harmless ERROR on every schema change. Delta's own log is the source of truth.
+    # Delta tables don't fit Hive's column-type model, so the local metastore logs
+    # harmless warnings and stack traces on every schema change. Delta's own log is
+    # the source of truth, so silence them.
     log4j = spark._jvm.org.apache.logging.log4j
-    log4j.core.config.Configurator.setLevel("org.apache.hadoop.hive.metastore.HiveAlterHandler", log4j.Level.OFF)
+    for logger in (
+        "org.apache.hadoop.hive.metastore.HiveAlterHandler",
+        "org.apache.spark.sql.hive.HiveExternalCatalog",
+        "org.apache.hadoop.hive.conf.HiveConf",
+    ):
+        log4j.core.config.Configurator.setLevel(logger, log4j.Level.OFF)
     return spark
